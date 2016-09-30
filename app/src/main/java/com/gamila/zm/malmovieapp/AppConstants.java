@@ -1,4 +1,4 @@
-package com.gamila.zm.malmovieapp.utils;
+package com.gamila.zm.malmovieapp;
 
 import android.support.annotation.StringDef;
 
