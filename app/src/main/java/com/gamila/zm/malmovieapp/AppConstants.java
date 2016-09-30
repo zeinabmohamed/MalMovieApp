@@ -12,6 +12,10 @@ import java.lang.annotation.RetentionPolicy;
 public class AppConstants {
 
     public static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    public static String MOVIES_URL_MOST_POPULAR = "http://api.themoviedb.org/3/movie/popular?api_key"
+            +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
+    public static String MOVIES_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?api_key"
+            +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
 
     @StringDef({IMAGE_SIZE.W_92,
             IMAGE_SIZE.W_154, IMAGE_SIZE.W_185, IMAGE_SIZE.W_342, IMAGE_SIZE.W_500, IMAGE_SIZE.W_780})
@@ -25,6 +29,7 @@ public class AppConstants {
         String W_500 = "w500";
         String W_780 = "w780";
     }
+
 
 
 }
