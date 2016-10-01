@@ -124,7 +124,7 @@ public class GetMovieReviewsApiThread extends AsyncTask<Long, Object, Object> {
 
         void showError(Exception result);
 
-        void updateByMovieReviewsResults(List<GetMovieReviewsResponse.Review> results);
+        void updateByMovieReviewsResults(List<GetMovieReviewsResponse.ReviewMovie> results);
     }
 
 }

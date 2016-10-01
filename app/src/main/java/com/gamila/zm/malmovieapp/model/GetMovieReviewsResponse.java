@@ -26,7 +26,7 @@ public class GetMovieReviewsResponse {
      * url : https://www.themoviedb.org/review/5723a329c3a3682e720005db
      */
 
-    private List<Review> results;
+    private List<ReviewMovie> results;
 
     public long getId() {
         return id;
@@ -60,15 +60,15 @@ public class GetMovieReviewsResponse {
         this.total_results = total_results;
     }
 
-    public List<Review> getResults() {
+    public List<ReviewMovie> getResults() {
         return results;
     }
 
-    public void setResults(List<Review> results) {
+    public void setResults(List<ReviewMovie> results) {
         this.results = results;
     }
 
-    public static class Review {
+    public static class ReviewMovie {
         private String id;
         private String author;
         private String content;
