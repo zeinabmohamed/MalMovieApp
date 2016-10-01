@@ -2,4 +2,7 @@
     <string name="app_name">MalMovieApp</string>
     <string name="title_movie_list">Items</string>
     <string name="title_movie_detail">Movie Detail</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated">Top Rated Movies</string>
+    <string name="loading">Loading...</string>
 </resources>
