@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.gamila.zm.malmovieapp.AppConstants;
 import com.gamila.zm.malmovieapp.BuildConfig;
+import com.gamila.zm.malmovieapp.R;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -28,12 +29,12 @@ public class ImageUtil {
     }
 
     public void loadImageByFullUrlInImageView(Context context, String imageStringUrl, ImageView imageView) {
-        Picasso.with(context).load(imageStringUrl).into(imageView);
+        Picasso.with(context).load(imageStringUrl).fit().placeholder(R.drawable.ic_image_default).into(imageView);
     }
 
     public void loadImageByImageNameInImageView(Context context, String imageName, ImageView imageView) {
         Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.IMAGE_SIZE.W_185 +
-                imageName).fit().into(imageView);
+                imageName).fit().placeholder(R.drawable.ic_image_default).into(imageView);
     }
 
 

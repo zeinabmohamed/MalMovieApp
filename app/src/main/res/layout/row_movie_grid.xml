@@ -7,19 +7,7 @@
     <ImageView
         android:id="@+id/row_movieItem_movieImageView"
         android:layout_width="match_parent"
+        android:src="@drawable/ic_image_default"
         android:layout_height="@dimen/row_movie_image_height"/>
 
- <!--   <TextView
-        android:id="@+id/id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />-->
 </LinearLayout>
