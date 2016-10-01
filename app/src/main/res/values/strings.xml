@@ -10,4 +10,5 @@
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
     <string name="more"><u>more</u></string>
+    <string name="movie_details">Movie Details</string>
 </resources>
