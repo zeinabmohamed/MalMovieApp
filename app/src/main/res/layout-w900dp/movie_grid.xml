@@ -25,7 +25,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
+        app:spanCount="3"
+        app:layoutManager="GridLayoutManager"
         tools:context="com.gamila.zm.malmovieapp.activity.MovieGridActivity"
         tools:listitem="@layout/row_movie_grid" />
 

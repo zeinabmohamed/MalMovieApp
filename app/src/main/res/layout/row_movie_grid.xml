@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/row_movieItem_movieImageView"
         android:layout_width="match_parent"
-        android:layout_height="185dp"/>
+        android:layout_height="@dimen/row_movie_image_height"/>
 
  <!--   <TextView
         android:id="@+id/id"

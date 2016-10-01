@@ -6,9 +6,9 @@
     android:name="com.gamila.zm.malmovieapp.view.activity.MovieListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:spanCount="2"
     app:layoutManager="GridLayoutManager"
     tools:context="com.gamila.zm.malmovieapp.activity.MovieGridActivity"
     tools:listitem="@layout/row_movie_grid" />
+    <!--android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"-->

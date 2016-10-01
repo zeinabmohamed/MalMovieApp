@@ -11,11 +11,20 @@ import java.lang.annotation.RetentionPolicy;
 
 public class AppConstants {
 
-    public static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     public static String MOVIES_URL_MOST_POPULAR = "http://api.themoviedb.org/3/movie/popular?api_key"
             +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
     public static String MOVIES_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?api_key"
             +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
+
+    @StringDef({MOVIE_LIST_TYPE.POPULAR, MOVIE_LIST_TYPE.TOP_RATED})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface MOVIE_LIST_TYPE {
+
+        String POPULAR = "popular";
+        String TOP_RATED = "top_rated";
+    }
+
+    public static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
 
     @StringDef({IMAGE_SIZE.W_92,
             IMAGE_SIZE.W_154, IMAGE_SIZE.W_185, IMAGE_SIZE.W_342, IMAGE_SIZE.W_500, IMAGE_SIZE.W_780})
