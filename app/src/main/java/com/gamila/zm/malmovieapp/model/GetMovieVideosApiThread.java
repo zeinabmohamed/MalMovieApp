@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.gamila.zm.malmovieapp.AppConstants;
 import com.gamila.zm.malmovieapp.R;
 import com.gamila.zm.malmovieapp.utils.NetworkUtil;
 import com.google.gson.Gson;
-import com.google.gson.internal.Excluder;
-import com.google.gson.internal.ObjectConstructor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,29 +15,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by Zeinab Mohamed on 10/1/2016.
  */
 
-public class GetMoviesThread extends AsyncTask<String, Object, Object> {
+public class GetMovieVideosApiThread extends AsyncTask<Long, Object, Object> {
 
-    private static final String TAG = GetMoviesThread.class.getSimpleName();
+    private static final String TAG = GetMovieVideosApiThread.class.getSimpleName();
     private final Context context;
-    private MovieResultListener movieResultListener;
+    private MovieVideosResultListener movieVideosResultListener;
 
-    public GetMoviesThread(Context context ,MovieResultListener movieResultListener) {
-        this.movieResultListener = movieResultListener;
+    public GetMovieVideosApiThread(Context context , MovieVideosResultListener movieVideosResultListener) {
+        this.movieVideosResultListener = movieVideosResultListener;
         this.context= context;
     }
 
 
     @Override
     protected void onPreExecute() {
-        movieResultListener.showLoading();
+        movieVideosResultListener.showLoading();
     }
 
-    protected Object doInBackground(String... params) {
+    protected Object doInBackground(Long... params) {
         Log.d(TAG, "doInBackground() called with: params " + params[0]);
         // handle request
         HttpURLConnection urlConnection = null;
@@ -48,7 +48,8 @@ public class GetMoviesThread extends AsyncTask<String, Object, Object> {
         String moviesListJsonStr = null;
         if (NetworkUtil.isOnline(context)) {
         try {
-                URL url = new URL(params[0]);
+                URL url = new URL(String.format(AppConstants.MOVIE_VIDEOS_URL,params[0]));
+            Log.i(TAG, "doInBackground: movie Videos url "+url.toString());
                 // Create the request to themoviedb, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -74,7 +75,7 @@ public class GetMoviesThread extends AsyncTask<String, Object, Object> {
                 }
                 moviesListJsonStr = buffer.toString();
                 Gson gson = new Gson();
-                GetMoviesResponse response = gson.fromJson(moviesListJsonStr, GetMoviesResponse.class);
+                GetMovieVideosResponse response = gson.fromJson(moviesListJsonStr, GetMovieVideosResponse.class);
                 return response;
             }catch(IOException e){
                 Log.e(TAG, "Error ", e);
@@ -102,16 +103,31 @@ public class GetMoviesThread extends AsyncTask<String, Object, Object> {
     protected void onPostExecute(Object result) {
         Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
         if(result !=null){
-            if(result instanceof  GetMoviesResponse){
-                movieResultListener.updateByMovieResults(((GetMoviesResponse)result).getResults());
-                movieResultListener.hideLoading();
+            if(result instanceof  GetMovieVideosResponse){
+                movieVideosResultListener.updateByMovieVideosResults(((GetMovieVideosResponse)result).getResults());
+                movieVideosResultListener.hideLoading();
 
             }else if(result instanceof Exception){
-                movieResultListener.hideLoading();
-                movieResultListener.showError((Exception) result);
+                movieVideosResultListener.hideLoading();
+                movieVideosResultListener.showError((Exception) result);
             }
         }else {
-            movieResultListener.hideLoading();
+            movieVideosResultListener.hideLoading();
         }
     }
+
+    /**
+     * Listener to api
+     */
+    public interface MovieVideosResultListener {
+
+        void showLoading();
+
+        void hideLoading();
+
+        void updateByMovieVideosResults(List<GetMovieVideosResponse.VideoInfo> movieVideosList);
+
+        void showError(Exception result);
+    }
+
 }

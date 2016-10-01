@@ -21,8 +21,7 @@ import com.gamila.zm.malmovieapp.AppConstants;
 import com.gamila.zm.malmovieapp.R;
 import com.gamila.zm.malmovieapp.fragment.MovieDetailFragment;
 import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
-import com.gamila.zm.malmovieapp.model.GetMoviesThread;
-import com.gamila.zm.malmovieapp.model.MovieResultListener;
+import com.gamila.zm.malmovieapp.model.GetMoviesApiThread;
 import com.gamila.zm.malmovieapp.utils.ImageUtil;
 
 import java.util.ArrayList;
@@ -36,14 +35,14 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class MovieGridActivity extends AppCompatActivity implements MovieResultListener {
+public class MovieGridActivity extends AppCompatActivity implements GetMoviesApiThread.MovieResultListener {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
-    private GetMoviesThread getMoviesThread;
+    private GetMoviesApiThread getMoviesThread;
     private ProgressDialog progressDialog;
     private View recyclerView;
 
@@ -75,7 +74,7 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
 
     private void getMoviesResult(String moviesUrlMostPopular) {
         /*if (getMoviesThread == null)*/
-            getMoviesThread = new GetMoviesThread(this,this);
+            getMoviesThread = new GetMoviesApiThread(this,this);
 
         getMoviesThread.execute(moviesUrlMostPopular);
     }

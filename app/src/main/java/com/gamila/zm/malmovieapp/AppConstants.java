@@ -24,8 +24,13 @@ public class AppConstants {
         String TOP_RATED = "top_rated";
     }
 
-    public static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    public static String MOVIE_VIDEOS_URL = "http://api.themoviedb.org/3/movie/%d/videos?api_key"
+            +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
 
+    public static String MOVIE_REVIEWS_URL = "http://api.themoviedb.org/3/movie/%d/reviews?api_key"
+            +"="+BuildConfig.THE_MOVIE_DB_API_KEY;
+
+    public static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     @StringDef({IMAGE_SIZE.W_92,
             IMAGE_SIZE.W_154, IMAGE_SIZE.W_185, IMAGE_SIZE.W_342, IMAGE_SIZE.W_500, IMAGE_SIZE.W_780})
     @Retention(RetentionPolicy.SOURCE)
