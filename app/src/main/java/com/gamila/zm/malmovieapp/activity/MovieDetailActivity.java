@@ -56,8 +56,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(MovieDetailFragment.ARG_MOVIE_ITEM,
-                    getIntent().getStringExtra(MovieDetailFragment.ARG_MOVIE_ITEM));
+            arguments.putSerializable(MovieDetailFragment.ARG_MOVIE_ITEM,
+                    getIntent().getSerializableExtra(MovieDetailFragment.ARG_MOVIE_ITEM));
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -76,7 +76,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, MovieGridActivity.class));
+            /*navigateUpTo(new Intent(this, MovieGridActivity.class));*/
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
