@@ -1,5 +1,6 @@
 package com.gamila.zm.malmovieapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -69,7 +70,7 @@ public class GetMoviesResponse {
         this.results = results;
     }
 
-    public static class Movie {
+    public static class Movie implements Serializable {
         private String poster_path;
         private boolean adult;
         private String overview;

@@ -12,4 +12,6 @@ public interface MovieResultListener {
     void hideLoading();
 
     void updateByMovieResults(List<GetMoviesResponse.Movie> moviesList);
+
+    void showError(Exception result);
 }

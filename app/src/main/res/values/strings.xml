@@ -5,4 +5,6 @@
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated">Top Rated Movies</string>
     <string name="loading">Loading...</string>
+    <string name="server_error_please_try_again_later">Server error please try again later</string>
+    <string name="please_check_your_internet_connection">Please check your internet connection</string>
 </resources>

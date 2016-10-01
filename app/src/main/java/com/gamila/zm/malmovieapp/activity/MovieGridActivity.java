@@ -15,16 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.gamila.zm.malmovieapp.AppConstants;
 import com.gamila.zm.malmovieapp.R;
-import com.gamila.zm.malmovieapp.dummy.DummyContent;
 import com.gamila.zm.malmovieapp.fragment.MovieDetailFragment;
 import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
 import com.gamila.zm.malmovieapp.model.GetMoviesThread;
 import com.gamila.zm.malmovieapp.model.MovieResultListener;
 import com.gamila.zm.malmovieapp.utils.ImageUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,8 +44,13 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
      */
     private boolean mTwoPane;
     private GetMoviesThread getMoviesThread;
-    private ProgressDialog progressDilaog;
+    private ProgressDialog progressDialog;
+    private View recyclerView;
 
+    /**
+     * An array of movie items.
+     */
+    public static final List<GetMoviesResponse.Movie> ITEMS = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +60,7 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        View recyclerView = findViewById(R.id.movie_grid);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+         recyclerView = findViewById(R.id.movie_grid);
 
         if (findViewById(R.id.movie_detail_container) != null) {
             // The detail container view will be present only in the
@@ -65,18 +69,19 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+        setTitle(getString(R.string.popular_movies));
         getMoviesResult(AppConstants.MOVIES_URL_MOST_POPULAR);
     }
 
     private void getMoviesResult(String moviesUrlMostPopular) {
-        if (getMoviesThread == null)
-            getMoviesThread = new GetMoviesThread(this);
+        /*if (getMoviesThread == null)*/
+            getMoviesThread = new GetMoviesThread(this,this);
 
         getMoviesThread.execute(moviesUrlMostPopular);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new MovieRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new MovieRecyclerViewAdapter(ITEMS));
     }
 
     @Override
@@ -90,8 +95,12 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_popularMovies:
+                setTitle(getString(R.string.popular_movies));
+                getMoviesResult(AppConstants.MOVIES_URL_MOST_POPULAR);
                 break;
             case R.id.action_topRated:
+                setTitle(getString(R.string.top_rated));
+                getMoviesResult(AppConstants.MOVIES_URL_TOP_RATED);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -99,53 +108,54 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
 
     @Override
     public void showLoading() {
-
-        if (progressDilaog == null) {
-            progressDilaog = new ProgressDialog(this);
-            progressDilaog.setMessage(getString(R.string.loading));
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(getString(R.string.loading));
         }
-        progressDilaog.show();
+        progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if(progressDilaog != null)
-            progressDilaog.dismiss();
+        if(progressDialog != null)
+            progressDialog.dismiss();
+    }
+    @Override
+    public void updateByMovieResults(List<GetMoviesResponse.Movie> moviesList) {
+        ITEMS.clear();
+        ITEMS.addAll(moviesList);
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
     }
 
     @Override
-    public void updateByMovieResults(List<GetMoviesResponse.Movie> moviesList) {
-
+    public void showError(Exception result) {
+        Toast.makeText(this, result.getMessage(), Toast.LENGTH_SHORT).show();
     }
-
 
     public class MovieRecyclerViewAdapter
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
-
-        private final List<DummyContent.DummyItem> mValues;
-
-        public MovieRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        private final List<GetMoviesResponse.Movie> mValues;
+        public MovieRecyclerViewAdapter(List<GetMoviesResponse.Movie> items) {
             mValues = items;
         }
-
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_movie_grid, parent, false);
             return new ViewHolder(view);
         }
-
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            ImageUtil.getInstance().loadImageByImageNameInImageView(MovieGridActivity.this, "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg"
+            ImageUtil.getInstance().loadImageByImageNameInImageView(MovieGridActivity.this,holder.mItem.getPoster_path()
                     , holder.mMovieImageView);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_MOVIE_ID, holder.mItem.id);
+                        arguments.putSerializable(MovieDetailFragment.ARG_MOVIE_ITEM, holder.mItem);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -154,8 +164,7 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_MOVIE_ID, holder.mItem.id);
-
+                        intent.putExtra(MovieDetailFragment.ARG_MOVIE_ITEM, holder.mItem);
                         context.startActivity(intent);
                     }
                 }
@@ -170,17 +179,16 @@ public class MovieGridActivity extends AppCompatActivity implements MovieResultL
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final ImageView mMovieImageView;
-            public DummyContent.DummyItem mItem;
+            public GetMoviesResponse.Movie mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mMovieImageView = (ImageView) view.findViewById(R.id.row_movieItem_movieImageView);
             }
-
             @Override
             public String toString() {
-                return super.toString() + " '" + mItem.details + "'";
+                return super.toString() + " '" + mItem.getTitle() + "'";
             }
         }
     }
