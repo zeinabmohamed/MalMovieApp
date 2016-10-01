@@ -75,7 +75,7 @@ public class GetMoviesResponse {
         private boolean adult;
         private String overview;
         private String release_date;
-        private int id;
+        private long id;
         private String original_title;
         private String original_language;
         private String title;
@@ -118,11 +118,11 @@ public class GetMoviesResponse {
             this.release_date = release_date;
         }
 
-        public int getId() {
+        public long getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(long id) {
             this.id = id;
         }
 
