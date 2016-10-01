@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gamila.zm.malmovieapp.AppPreferences;
 import com.gamila.zm.malmovieapp.R;
 import com.gamila.zm.malmovieapp.activity.MovieDetailActivity;
 import com.gamila.zm.malmovieapp.activity.MovieGridActivity;
@@ -107,14 +109,37 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_detail, container, false);
+        final View rootView = inflater.inflate(R.layout.movie_detail, container, false);
         // Show the videos content as text in a TextView.
         if (mMovieItem != null) {
             ImageUtil.getInstance().loadImageByImageNameInImageView(getActivity(),
                     mMovieItem.getPoster_path(),((ImageView) rootView.findViewById(R.id.movie_ImageView)));
+            ((TextView) rootView.findViewById(R.id.movie_titleTextView)).setText(mMovieItem.getTitle());
             ((TextView) rootView.findViewById(R.id.movie_realseDateTextView)).setText(mMovieItem.getRelease_date());
             ((TextView) rootView.findViewById(R.id.movie_rateTextView)).setText(mMovieItem.getVote_average()+"/10");
             ((TextView) rootView.findViewById(R.id.movie_overViewTextView)).setText(mMovieItem.getOverview());
+
+            if(AppPreferences.isFavMovie(mMovieItem.getId(), getActivity())){
+                ((Button) rootView.findViewById(R.id.movie_addToFavButton)).
+                        setBackgroundResource(R.color.colorAccent);
+            }
+
+            ((Button) rootView.findViewById(R.id.movie_addToFavButton)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(AppPreferences.isFavMovie(mMovieItem.getId(), getActivity())){
+                        AppPreferences.removeMovieFromFav(getActivity(),mMovieItem.getId());
+                        ((Button) rootView.findViewById(R.id.movie_addToFavButton)).
+                                setBackgroundResource(android.R.color.darker_gray);
+                    }else{
+                        AppPreferences.addMovieToFav(getActivity(),mMovieItem.getId());
+                        ((Button) rootView.findViewById(R.id.movie_addToFavButton)).
+                                setBackgroundResource(R.color.colorAccent);
+                    }
+
+                }
+            });
 
             trailersContainer = ((LinearLayout) rootView.findViewById(R.id.movie_trailersContainer));
             if(videosList != null  && videosList.size()>0){
