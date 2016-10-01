@@ -33,7 +33,7 @@ public class ImageUtil {
 
     public void loadImageByImageNameInImageView(Context context, String imageName, ImageView imageView) {
         Picasso.with(context).load(AppConstants.IMAGE_BASE_URL + AppConstants.IMAGE_SIZE.W_185 +
-                imageName).into(imageView);
+                imageName).fit().into(imageView);
     }
 
 
