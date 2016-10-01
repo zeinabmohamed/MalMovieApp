@@ -26,7 +26,7 @@ import com.gamila.zm.malmovieapp.model.GetMovieVideosResponse;
 import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
 import com.gamila.zm.malmovieapp.utils.ImageUtil;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -41,6 +41,8 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
      */
     public static final String ARG_MOVIE_ITEM = "movie_item";
     private static final String TAG = MovieDetailFragment.class.getName();
+    private static final String TRALIERS_LIST = "trilers_list";
+    private static final String REVIEWS_LIST = "reviews_list";
 
     /**
      * The {@link com.gamila.zm.malmovieapp.model.GetMoviesResponse.Movie} content this fragment is presenting.
@@ -49,6 +51,8 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
     private ProgressDialog progressDialog;
     private LinearLayout trailersContainer;
     private LinearLayout reviewsContainer;
+    private ArrayList<GetMovieVideosResponse.VideoInfo> videosList;
+    private ArrayList<GetMovieReviewsResponse.ReviewMovie> reviewsList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,21 +60,40 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
      */
     public MovieDetailFragment() {
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(TRALIERS_LIST,videosList);
+        outState.putSerializable(REVIEWS_LIST, reviewsList);
+        outState.putSerializable(ARG_MOVIE_ITEM,mMovieItem);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().containsKey(ARG_MOVIE_ITEM)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mMovieItem = (GetMoviesResponse.Movie) getArguments().getSerializable(ARG_MOVIE_ITEM);
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mMovieItem.getTitle());
+        if(savedInstanceState != null){
+
+            mMovieItem = (GetMoviesResponse.Movie) savedInstanceState.getSerializable(ARG_MOVIE_ITEM);
+            videosList = (ArrayList<GetMovieVideosResponse.VideoInfo>) savedInstanceState.getSerializable(TRALIERS_LIST);
+            reviewsList = (ArrayList<GetMovieReviewsResponse.ReviewMovie>) savedInstanceState.getSerializable(REVIEWS_LIST);
+
+        }else {
+            if (getArguments().containsKey(ARG_MOVIE_ITEM)) {
+                // Load the dummy content specified by the fragment
+                // arguments. In a real-world scenario, use a Loader
+                // to load content from a content provider.
+                mMovieItem = (GetMoviesResponse.Movie) getArguments().getSerializable(ARG_MOVIE_ITEM);
+                Activity activity = this.getActivity();
+                CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+                if (appBarLayout != null) {
+                    appBarLayout.setTitle(getString(R.string.movie_details));
+                }
+
+
+                getMovieVideos(mMovieItem.getId());
+                getMovieReviews(mMovieItem.getId());
             }
-            getMovieVideos(mMovieItem.getId());
-            getMovieReviews(mMovieItem.getId());
         }
     }
     private void getMovieVideos(long id) {
@@ -85,7 +108,6 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
-
         // Show the videos content as text in a TextView.
         if (mMovieItem != null) {
             ImageUtil.getInstance().loadImageByImageNameInImageView(getActivity(),
@@ -93,8 +115,21 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
             ((TextView) rootView.findViewById(R.id.movie_realseDateTextView)).setText(mMovieItem.getRelease_date());
             ((TextView) rootView.findViewById(R.id.movie_rateTextView)).setText(mMovieItem.getVote_average()+"/10");
             ((TextView) rootView.findViewById(R.id.movie_overViewTextView)).setText(mMovieItem.getOverview());
+
             trailersContainer = ((LinearLayout) rootView.findViewById(R.id.movie_trailersContainer));
+            if(videosList != null  && videosList.size()>0){
+                for (GetMovieVideosResponse.VideoInfo videoInfo:
+                     videosList) {
+                    trailersContainer.addView(new TrailerVideoView(getActivity(),videoInfo));
+                }
+            }
             reviewsContainer = ((LinearLayout) rootView.findViewById(R.id.movie_reviewsContainer));
+            if(reviewsList != null  && reviewsList.size()>0){
+                for (GetMovieReviewsResponse.ReviewMovie reviewMovie:
+                        reviewsList) {
+                    reviewsContainer.addView(new ReviewMovieView(getActivity(),reviewMovie));
+                }
+            }
         }
         return rootView;
     }
@@ -102,6 +137,7 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
     public void showLoading() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCancelable(false);
             progressDialog.setMessage(getString(R.string.loading));
         }
         progressDialog.show();
@@ -112,8 +148,9 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
             progressDialog.dismiss();
     }
     @Override
-    public void updateByMovieVideosResults(List<GetMovieVideosResponse.VideoInfo> movieVideosList) {
+    public void updateByMovieVideosResults(ArrayList<GetMovieVideosResponse.VideoInfo> movieVideosList) {
         Log.i(TAG, "updateByMovieVideosResults: ");
+        videosList =movieVideosList;
         for (GetMovieVideosResponse.VideoInfo videoInfo :
                 movieVideosList) {
             trailersContainer.addView(new TrailerVideoView(getActivity(),videoInfo));
@@ -124,8 +161,9 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
         Toast.makeText(getActivity(), result.getMessage(), Toast.LENGTH_SHORT).show();
     }
     @Override
-    public void updateByMovieReviewsResults(List<GetMovieReviewsResponse.ReviewMovie> results) {
+    public void updateByMovieReviewsResults(ArrayList<GetMovieReviewsResponse.ReviewMovie> results) {
         Log.i(TAG, "updateByMovieVideosResults: ");
+        reviewsList = results;
         for (GetMovieReviewsResponse.ReviewMovie reviewMovie : results) {
             reviewsContainer.addView(new ReviewMovieView(getActivity(),reviewMovie));
         }

@@ -1,9 +1,11 @@
 package com.gamila.zm.malmovieapp.custom_view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -44,7 +46,8 @@ public class TrailerVideoView extends FrameLayout {
         ((ImageView) findViewById(R.id.movie_trailer_playIconImageView)).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 10/1/2016  handle on click
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + videoInfo.getKey()));
+                TrailerVideoView.this.getContext().startActivity(intent);
             }
         });
     }

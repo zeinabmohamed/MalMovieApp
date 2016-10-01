@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Zeinab Mohamed on 10/1/2016.
@@ -74,7 +74,9 @@ public class GetMovieReviewsApiThread extends AsyncTask<Long, Object, Object> {
                     return new Exception(context.getString(R.string.server_error_please_try_again_later));
                 }
                 moviesListJsonStr = buffer.toString();
-                Gson gson = new Gson();
+            Log.i(TAG, "doInBackground: Movie reviews "+ moviesListJsonStr);
+
+            Gson gson = new Gson();
                 GetMovieReviewsResponse response = gson.fromJson(moviesListJsonStr, GetMovieReviewsResponse.class);
                 return response;
             }catch(IOException e){
@@ -124,7 +126,7 @@ public class GetMovieReviewsApiThread extends AsyncTask<Long, Object, Object> {
 
         void showError(Exception result);
 
-        void updateByMovieReviewsResults(List<GetMovieReviewsResponse.ReviewMovie> results);
+        void updateByMovieReviewsResults(ArrayList<GetMovieReviewsResponse.ReviewMovie> results);
     }
 
 }

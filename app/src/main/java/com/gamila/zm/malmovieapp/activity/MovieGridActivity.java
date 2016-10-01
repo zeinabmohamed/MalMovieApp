@@ -20,8 +20,8 @@ import android.widget.Toast;
 import com.gamila.zm.malmovieapp.AppConstants;
 import com.gamila.zm.malmovieapp.R;
 import com.gamila.zm.malmovieapp.fragment.MovieDetailFragment;
-import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
 import com.gamila.zm.malmovieapp.model.GetMoviesApiThread;
+import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
 import com.gamila.zm.malmovieapp.utils.ImageUtil;
 
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ import java.util.List;
  */
 public class MovieGridActivity extends AppCompatActivity implements GetMoviesApiThread.MovieResultListener {
 
+    private static final String MOVIES_LIST = "movies_list";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -50,6 +51,7 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
      * An array of movie items.
      */
     public static final List<GetMoviesResponse.Movie> ITEMS = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +61,7 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-         recyclerView = findViewById(R.id.movie_grid);
+        recyclerView = findViewById(R.id.movie_grid);
 
         if (findViewById(R.id.movie_detail_container) != null) {
             // The detail container view will be present only in the
@@ -69,12 +71,18 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
             mTwoPane = true;
         }
         setTitle(getString(R.string.popular_movies));
-        getMoviesResult(AppConstants.MOVIES_URL_MOST_POPULAR);
+
+
+        if (ITEMS.size() <= 0)
+            getMoviesResult(AppConstants.MOVIES_URL_MOST_POPULAR);
+        else
+            setupRecyclerView((RecyclerView) recyclerView);
     }
+
 
     private void getMoviesResult(String moviesUrlMostPopular) {
         /*if (getMoviesThread == null)*/
-            getMoviesThread = new GetMoviesApiThread(this,this);
+        getMoviesThread = new GetMoviesApiThread(this, this);
 
         getMoviesThread.execute(moviesUrlMostPopular);
     }
@@ -107,18 +115,21 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
 
     @Override
     public void showLoading() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(getString(R.string.loading));
-        }
-        progressDialog.show();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.loading));
+
+        if (!progressDialog.isShowing())
+            progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if(progressDialog != null)
+        if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
+
     @Override
     public void updateByMovieResults(List<GetMoviesResponse.Movie> moviesList) {
         ITEMS.clear();
@@ -135,19 +146,22 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
     public class MovieRecyclerViewAdapter
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
         private final List<GetMoviesResponse.Movie> mValues;
+
         public MovieRecyclerViewAdapter(List<GetMoviesResponse.Movie> items) {
             mValues = items;
         }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_movie_grid, parent, false);
             return new ViewHolder(view);
         }
+
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            ImageUtil.getInstance().loadImageByImageNameInImageView(MovieGridActivity.this,holder.mItem.getPoster_path()
+            ImageUtil.getInstance().loadImageByImageNameInImageView(MovieGridActivity.this, holder.mItem.getPoster_path()
                     , holder.mMovieImageView);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -185,10 +199,19 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
                 mView = view;
                 mMovieImageView = (ImageView) view.findViewById(R.id.row_movieItem_movieImageView);
             }
+
             @Override
             public String toString() {
                 return super.toString() + " '" + mItem.getTitle() + "'";
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+
+        super.onStop();
     }
 }

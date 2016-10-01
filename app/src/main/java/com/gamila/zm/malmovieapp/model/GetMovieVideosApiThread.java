@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Zeinab Mohamed on 10/1/2016.
@@ -74,6 +74,7 @@ public class GetMovieVideosApiThread extends AsyncTask<Long, Object, Object> {
                     return new Exception(context.getString(R.string.server_error_please_try_again_later));
                 }
                 moviesListJsonStr = buffer.toString();
+            Log.i(TAG, "doInBackground: Movie trailes "+ moviesListJsonStr);
                 Gson gson = new Gson();
                 GetMovieVideosResponse response = gson.fromJson(moviesListJsonStr, GetMovieVideosResponse.class);
                 return response;
@@ -125,7 +126,7 @@ public class GetMovieVideosApiThread extends AsyncTask<Long, Object, Object> {
 
         void hideLoading();
 
-        void updateByMovieVideosResults(List<GetMovieVideosResponse.VideoInfo> movieVideosList);
+        void updateByMovieVideosResults(ArrayList<GetMovieVideosResponse.VideoInfo> movieVideosList);
 
         void showError(Exception result);
     }

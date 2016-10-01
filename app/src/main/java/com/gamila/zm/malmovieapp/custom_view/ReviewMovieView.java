@@ -1,6 +1,8 @@
 package com.gamila.zm.malmovieapp.custom_view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -44,6 +46,8 @@ public class ReviewMovieView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 // TODO: 10/1/2016  handle on click
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(reviewMovie.getUrl()));
+                ReviewMovieView.this.getContext().startActivity(browserIntent);
             }
         });
     }

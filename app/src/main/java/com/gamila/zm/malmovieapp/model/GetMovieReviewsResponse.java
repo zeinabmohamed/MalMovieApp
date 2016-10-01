@@ -1,6 +1,7 @@
 package com.gamila.zm.malmovieapp.model;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Zeinab Mohamed on 10/1/2016.
@@ -26,7 +27,7 @@ public class GetMovieReviewsResponse {
      * url : https://www.themoviedb.org/review/5723a329c3a3682e720005db
      */
 
-    private List<ReviewMovie> results;
+    private ArrayList<ReviewMovie> results;
 
     public long getId() {
         return id;
@@ -60,15 +61,15 @@ public class GetMovieReviewsResponse {
         this.total_results = total_results;
     }
 
-    public List<ReviewMovie> getResults() {
+    public ArrayList<ReviewMovie> getResults() {
         return results;
     }
 
-    public void setResults(List<ReviewMovie> results) {
+    public void setResults(ArrayList<ReviewMovie> results) {
         this.results = results;
     }
 
-    public static class ReviewMovie {
+    public static class ReviewMovie implements Serializable {
         private String id;
         private String author;
         private String content;

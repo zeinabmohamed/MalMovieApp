@@ -1,6 +1,7 @@
 package com.gamila.zm.malmovieapp.model;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Zeinab Mohamed on 10/1/2016.
@@ -30,7 +31,7 @@ public class GetMovieVideosResponse {
      * type : Trailer
      */
 
-    private List<VideoInfo> results;
+    private ArrayList<VideoInfo> results;
 
     public long getId() {
         return id;
@@ -40,15 +41,15 @@ public class GetMovieVideosResponse {
         this.id = id;
     }
 
-    public List<VideoInfo> getResults() {
+    public ArrayList<VideoInfo> getResults() {
         return results;
     }
 
-    public void setResults(List<VideoInfo> results) {
+    public void setResults(ArrayList<VideoInfo> results) {
         this.results = results;
     }
 
-    public static class VideoInfo {
+    public static class VideoInfo implements Serializable {
         private String id;
         private String iso_639_1;
         private String iso_3166_1;
