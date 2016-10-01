@@ -15,7 +15,8 @@
             android:id="@+id/movie_ImageView"
             android:layout_width="@dimen/item_width"
             android:layout_marginEnd="16dp"
-            android:layout_height="wrap_content" />
+            android:src="@drawable/ic_image_default"
+            android:layout_height="@dimen/row_movie_image_height" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -24,32 +25,36 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/movie_realseDateTextView"
-                style="?android:attr/textAppearanceLarge"
+                style="?android:attr/textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:textIsSelectable="true" />
-            <TextView
-                android:id="@+id/movie_periodTextView"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textIsSelectable="true" />
+
             <TextView
                 android:id="@+id/movie_rateTextView"
-                style="?android:attr/textAppearanceLarge"
+                style="?android:attr/textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:textIsSelectable="true" />
+          <!--  <TextView
+                android:id="@+id/movie_periodTextView"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:textIsSelectable="true" />-->
 
         </LinearLayout>
 
     </LinearLayout>
     <TextView
         android:id="@+id/movie_overViewTextView"
-        style="?android:attr/textAppearanceLarge"
+        style="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -58,6 +63,14 @@
         android:layout_width="match_parent"
         android:background="@color/divider"
         android:layout_height="0.5dp"/>
+
+    <TextView
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/trailers"
+        android:textIsSelectable="true" />
 
 </LinearLayout>
 
