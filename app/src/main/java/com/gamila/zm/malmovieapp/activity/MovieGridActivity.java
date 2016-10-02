@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.gamila.zm.malmovieapp.AppConstants;
+import com.gamila.zm.malmovieapp.AppPreferences;
 import com.gamila.zm.malmovieapp.R;
 import com.gamila.zm.malmovieapp.fragment.MovieDetailFragment;
 import com.gamila.zm.malmovieapp.model.GetMoviesApiThread;
@@ -109,8 +110,22 @@ public class MovieGridActivity extends AppCompatActivity implements GetMoviesApi
                 setTitle(getString(R.string.top_rated));
                 getMoviesResult(AppConstants.MOVIES_URL_TOP_RATED);
                 break;
+            case R.id.action_favourite:
+                setTitle(getString(R.string.favorites));
+                getFavMovies();
+
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getFavMovies() {
+        showLoading();
+        ITEMS.clear();
+        ITEMS.addAll(AppPreferences.loadFavMovies(this));
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
+        hideLoading();
     }
 
     @Override

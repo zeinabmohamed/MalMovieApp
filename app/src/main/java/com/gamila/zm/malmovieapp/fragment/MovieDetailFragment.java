@@ -129,11 +129,11 @@ public class MovieDetailFragment extends Fragment implements GetMovieVideosApiTh
                 public void onClick(View v) {
 
                     if(AppPreferences.isFavMovie(mMovieItem.getId(), getActivity())){
-                        AppPreferences.removeMovieFromFav(getActivity(),mMovieItem.getId());
+                        AppPreferences.removeMovieFromFav(getActivity(),mMovieItem);
                         ((Button) rootView.findViewById(R.id.movie_addToFavButton)).
                                 setBackgroundResource(android.R.color.darker_gray);
                     }else{
-                        AppPreferences.addMovieToFav(getActivity(),mMovieItem.getId());
+                        AppPreferences.addMovieToFav(getActivity(),mMovieItem);
                         ((Button) rootView.findViewById(R.id.movie_addToFavButton)).
                                 setBackgroundResource(R.color.colorAccent);
                     }

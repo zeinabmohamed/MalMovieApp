@@ -3,6 +3,7 @@ package com.gamila.zm.malmovieapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.gamila.zm.malmovieapp.model.GetMoviesResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,21 +24,24 @@ public final class AppPreferences {
         return context.getSharedPreferences(MAL_MOVIE_APP_SHARED_PREFRENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static void addMovieToFav(Context context, long id) {
-        List<Long> favMoviesIds = loadFavMovies(context);
+    public static void addMovieToFav(Context context, GetMoviesResponse.Movie selectedMovie) {
+        List<GetMoviesResponse.Movie> favMoviesIds = loadFavMovies(context);
 
-        favMoviesIds.add(id);
+        favMoviesIds.add(selectedMovie);
 
         saveSharedPreferencesFavMoviesIdsList(favMoviesIds, context);
     }
 
-    public static void removeMovieFromFav(Context context, long id) {
-        List<Long> favMoviesIds = loadFavMovies(context);
-        favMoviesIds.remove(id);
+    public static void removeMovieFromFav(Context context, GetMoviesResponse.Movie selectedMovie) {
+        List<GetMoviesResponse.Movie> favMoviesIds = loadFavMovies(context);
+        for (int i = 0; i < favMoviesIds.size(); i++) {
+            if (favMoviesIds.get(i).getId() == selectedMovie.getId())
+                favMoviesIds.remove(i);
+        }
         saveSharedPreferencesFavMoviesIdsList(favMoviesIds, context);
     }
 
-    private static void saveSharedPreferencesFavMoviesIdsList(List<Long> favMoviesIds, Context context) {
+    private static void saveSharedPreferencesFavMoviesIdsList(List<GetMoviesResponse.Movie> favMoviesIds, Context context) {
         SharedPreferences.Editor prefsEditor = getSharedPreferences(context).edit();
         Gson gson = new Gson();
         String json = gson.toJson(favMoviesIds);
@@ -45,14 +49,14 @@ public final class AppPreferences {
         prefsEditor.commit();
     }
 
-    private static List<Long> loadFavMovies(Context context) {
-        List<Long> favMoviesIds = new ArrayList<Long>();
+    public static List<GetMoviesResponse.Movie> loadFavMovies(Context context) {
+        List<GetMoviesResponse.Movie> favMoviesIds = new ArrayList<GetMoviesResponse.Movie>();
         Gson gson = new Gson();
         String json = getSharedPreferences(context).getString(FAV_MOVIES_LIST, "");
         if (json.isEmpty()) {
-            favMoviesIds = new ArrayList<Long>();
+            favMoviesIds = new ArrayList<GetMoviesResponse.Movie>();
         } else {
-            Type type = new TypeToken<List<Long>>() {
+            Type type = new TypeToken<List<GetMoviesResponse.Movie>>() {
             }.getType();
             favMoviesIds = gson.fromJson(json, type);
         }
@@ -62,11 +66,12 @@ public final class AppPreferences {
 
 
     public static boolean isFavMovie(long id, Context context) {
-       List<Long> idsFav = loadFavMovies(context);
-        if(idsFav.contains(id)){
-            return true;
-        }else {
-            return false;
+        List<GetMoviesResponse.Movie> favMovies = loadFavMovies(context);
+        for (GetMoviesResponse.Movie movie : favMovies) {
+            if (movie.getId() == id) {
+                return true;
+            }
         }
+        return false;
     }
 }
