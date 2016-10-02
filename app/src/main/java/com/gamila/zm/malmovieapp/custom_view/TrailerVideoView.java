@@ -1,5 +1,6 @@
 package com.gamila.zm.malmovieapp.custom_view;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -46,8 +47,14 @@ public class TrailerVideoView extends FrameLayout {
         ((ImageView) findViewById(R.id.movie_trailer_playIconImageView)).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + videoInfo.getKey()));
-                TrailerVideoView.this.getContext().startActivity(intent);
+                Intent appIntent =  new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + videoInfo.getKey()));
+                Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://www.youtube.com/watch?v=" + videoInfo.getKey()));
+                try {
+                    TrailerVideoView.this.getContext().startActivity(appIntent);
+                } catch (ActivityNotFoundException ex) {
+                    TrailerVideoView.this.getContext().startActivity(webIntent);
+                }
             }
         });
     }
